@@ -18,7 +18,7 @@
       <section class="intro">
         <p class="eyebrow">TU BANDEJA, MÁS CLARA</p>
         <h1>Entiende tus correos<br><span>de un vistazo.</span></h1>
-        <p class="lead">Conecta Gmail para leer y organizar tus mensajes. Tus correos se procesan en este equipo.</p>
+        <p class="lead">Conecta Gmail para leer y organizar tus mensajes. Puedes mover a la papelera los correos que no quieras ver.</p>
       </section>
 
       <section class="connection panel" aria-labelledby="connection-title">
@@ -50,8 +50,22 @@
       <div id="loading" class="loading" hidden><span class="spinner"></span> Leyendo tus correos…</div>
       <div id="error-message" class="error-message" role="alert" hidden></div>
 
+      <dialog id="trash-confirm-dialog" class="confirm-dialog" aria-labelledby="trash-dialog-title" aria-describedby="trash-dialog-description">
+        <div class="confirm-icon" aria-hidden="true">⌫</div>
+        <p class="eyebrow">CONFIRMA LA ACCIÓN</p>
+        <h2 id="trash-dialog-title">¿Mover a la papelera?</h2>
+        <p id="trash-dialog-description" class="confirm-description">Este correo se moverá a la papelera de Gmail. Podrás recuperarlo desde allí.</p>
+        <p id="trash-dialog-subject" class="confirm-subject"></p>
+        <div class="confirm-actions">
+          <button id="cancel-trash-button" class="button button-light" type="button" autofocus>Cancelar</button>
+          <form method="dialog">
+            <button class="button button-danger" type="submit" value="trash">Mover a la papelera</button>
+          </form>
+        </div>
+      </dialog>
+
       <footer>
-        <span>Solo lectura · No se envían ni modifican mensajes</span>
+        <span>Los correos eliminados desde aquí se mueven a la papelera de Gmail</span>
         <span>Conexión protegida por Google OAuth</span>
       </footer>
     </main>

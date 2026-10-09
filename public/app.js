@@ -9,9 +9,13 @@ const emailList = document.querySelector("#email-list");
 const filters = document.querySelector("#category-filters");
 const modeNotice = document.querySelector("#mode-notice");
 const messageCount = document.querySelector("#message-count");
+const trashDialog = document.querySelector("#trash-confirm-dialog");
+const trashDialogSubject = document.querySelector("#trash-dialog-subject");
+const cancelTrashButton = document.querySelector("#cancel-trash-button");
 
 let allEmails = [];
 let activeCategory = "Todos";
+let canTrash = false;
 
 function showError(message) {
   errorMessage.textContent = message;
@@ -23,8 +27,16 @@ function clearError() {
   errorMessage.hidden = true;
 }
 
-async function requestJson(url) {
-  const response = await fetch(url, { cache: "no-store" });
+function confirmTrash(email) {
+  trashDialogSubject.textContent = `${email.from} · ${email.subject}`;
+  return new Promise((resolve) => {
+    trashDialog.addEventListener("close", () => resolve(trashDialog.returnValue === "trash"), { once: true });
+    trashDialog.showModal();
+  });
+}
+
+async function requestJson(url, options = {}) {
+  const response = await fetch(url, { cache: "no-store", ...options });
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || "No se pudo completar la solicitud.");
   return data;
@@ -41,10 +53,13 @@ async function loadStatus() {
       return;
     }
     setupNotice.hidden = true;
+    canTrash = status.canTrash;
     if (status.connected) {
-      connectionStatus.textContent = "Cuenta conectada · acceso de solo lectura.";
-      connectButton.textContent = "Gmail conectado";
-      connectButton.disabled = true;
+      connectionStatus.textContent = status.canTrash
+        ? "Cuenta conectada · puedes mover correos a la papelera."
+        : "Cuenta conectada · autoriza el permiso de Gmail para mover correos a la papelera.";
+      connectButton.textContent = status.canTrash ? "Gmail conectado" : "Autorizar eliminación";
+      connectButton.disabled = status.canTrash;
       await loadEmails();
     } else {
       connectionStatus.textContent = "Aún no has conectado una cuenta.";
@@ -123,6 +138,32 @@ function createEmailCard(email) {
     detail.append(toggle, body);
   }
 
+  const trashButton = document.createElement("button");
+  trashButton.type = "button";
+  trashButton.className = "trash-button";
+  trashButton.textContent = "Mover a la papelera";
+  trashButton.disabled = !canTrash;
+  trashButton.title = canTrash
+    ? "El correo se moverá a la papelera de Gmail"
+    : "Autoriza el permiso de Gmail para mover correos a la papelera";
+  trashButton.addEventListener("click", async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!canTrash || !await confirmTrash(email)) return;
+
+    trashButton.disabled = true;
+    clearError();
+    try {
+      await requestJson(`/api/emails/${encodeURIComponent(email.id)}/trash`, { method: "POST" });
+      allEmails = allEmails.filter((item) => item.id !== email.id);
+      renderEmails();
+    } catch (error) {
+      showError(error.message);
+      trashButton.disabled = false;
+    }
+  });
+  detail.append(trashButton);
+
   card.append(summary, detail);
   return card;
 }
@@ -169,5 +210,6 @@ async function loadEmails() {
 connectButton.addEventListener("click", () => {
   window.location.assign("/auth/google");
 });
+cancelTrashButton.addEventListener("click", () => trashDialog.close());
 refreshButton.addEventListener("click", loadEmails);
 loadStatus();

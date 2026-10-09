@@ -2,13 +2,14 @@
 
 Aplicación web local para leer, clasificar y resumir en español los correos recientes de una cuenta personal de Gmail. Usa una página sencilla y puede ejecutar la IA en el mismo equipo mediante Ollama.
 
-> **Privacidad:** la aplicación solicita a Google acceso de solo lectura. No envía, responde, elimina ni modifica mensajes. Está pensada para ejecutarse en tu computadora, no para publicarse como un servicio de internet.
+> **Privacidad:** la aplicación solicita permiso para leer mensajes y moverlos a la papelera de Gmail. No envía ni responde mensajes. Está pensada para ejecutarse en tu computadora, no para publicarse como un servicio de internet.
 
 ## Funciones
 
 - Lee hasta 15 mensajes recientes de la bandeja de entrada.
 - Clasifica los mensajes en **Promociones**, **Universidad**, **Facturas o banco**, **Personal** y **Otro**.
 - Permite filtrar mensajes por categoría y ver el texto del correo.
+- Permite mover mensajes a la papelera de Gmail desde la página. No es un borrado permanente.
 - Con Ollama, genera clasificación y resumen usando un modelo local, sin una API key de IA.
 - Sin Ollama, sigue funcionando con clasificación por palabras clave y una vista previa.
 - Guarda el token de Gmail localmente y excluye credenciales y dependencias de Git.
@@ -72,13 +73,14 @@ Desde la carpeta del proyecto:
 npm start
 ```
 
-Abre [http://localhost:3000](http://localhost:3000), pulsa **Conectar Gmail** y revisa los permisos en la página de Google. Acepta el permiso de lectura para cargar y clasificar los mensajes.
+Abre [http://localhost:3000](http://localhost:3000), pulsa **Conectar Gmail** y revisa los permisos en la página de Google. Acepta el permiso para leer mensajes y moverlos a la papelera.
 
 Para cerrar la aplicación, vuelve a la terminal donde corre `npm start` y pulsa `Ctrl+C`.
 
 ## Privacidad y seguridad
 
-- Gmail se autoriza con el permiso `gmail.readonly`.
+- Gmail se autoriza con el permiso `gmail.modify`, necesario para mover mensajes a la papelera.
+- El botón **Mover a la papelera** mueve el correo a la papelera de Gmail; desde allí puedes recuperarlo o eliminarlo permanentemente en Gmail.
 - El servidor escucha solo en `127.0.0.1`; no está diseñado para acceso remoto.
 - El token OAuth se guarda en `.gmail-token.json`.
 - Las credenciales locales se guardan en `.env`.

@@ -13,7 +13,8 @@ const PORT = Number(process.env.PORT || 3000);
 const REDIRECT_URI =
   process.env.GOOGLE_REDIRECT_URI || `http://localhost:${PORT}/oauth2callback`;
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:3b";
-const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
+const GMAIL_MODIFY_SCOPE = "https://www.googleapis.com/auth/gmail.modify";
+const SCOPES = [GMAIL_MODIFY_SCOPE];
 const CATEGORIES = ["Promociones", "Universidad", "Facturas o banco", "Personal", "Otro"];
 let pendingOAuthState = null;
 
@@ -314,9 +315,11 @@ const server = http.createServer(async (request, response) => {
     if (request.method === "GET" && url.pathname === "/api/status") {
       const tokens = await readTokens();
       const ollamaReady = await checkOllama();
+      const tokenScopes = (tokens?.scope || "").split(/\s+/);
       sendJson(response, 200, {
         configured: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
         connected: Boolean(tokens),
+        canTrash: tokenScopes.includes(GMAIL_MODIFY_SCOPE),
         ollamaReady,
         model: OLLAMA_MODEL,
       });
@@ -364,6 +367,26 @@ const server = http.createServer(async (request, response) => {
         mode: ollamaReady ? "ollama" : "rules",
         model: OLLAMA_MODEL,
       });
+      return;
+    }
+
+    const trashMatch = url.pathname.match(/^\/api\/emails\/([A-Za-z0-9_-]+)\/trash$/);
+    if (request.method === "POST" && trashMatch) {
+      const gmail = await getGmailClient();
+      if (!gmail) {
+        sendJson(response, 401, { error: "Primero conecta tu cuenta de Gmail." });
+        return;
+      }
+      const tokens = await readTokens();
+      if (!(tokens?.scope || "").split(/\s+/).includes(GMAIL_MODIFY_SCOPE)) {
+        sendJson(response, 403, { error: "Autoriza primero el permiso para mover correos a la papelera." });
+        return;
+      }
+      await gmail.users.messages.trash({
+        userId: "me",
+        id: trashMatch[1],
+      });
+      sendJson(response, 200, { success: true });
       return;
     }
 

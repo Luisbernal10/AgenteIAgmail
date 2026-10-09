@@ -155,6 +155,30 @@ h1 span { color: var(--green); }
 .email-summary { margin: 0 0 13px; color: #43524b; font-size: 13px; line-height: 1.6; }
 .body-toggle { padding: 0; border: 0; background: none; color: var(--green); cursor: pointer; font-size: 12px; font-weight: 700; }
 .email-body { margin: 12px 0 0; padding: 13px; border-radius: 8px; background: #f7f9f7; color: #4d5a54; font-size: 12px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+.trash-button { padding: 8px 12px; border: 1px solid #f0d5d2; border-radius: 7px; background: #fff4f2; color: #963e34; cursor: pointer; font-size: 12px; font-weight: 700; }
+.trash-button:hover { background: #fde9e6; }
+.trash-button:disabled { cursor: not-allowed; opacity: .6; }
+.confirm-dialog {
+  width: min(440px, calc(100% - 32px));
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 24px 80px #10251d38;
+}
+.confirm-dialog::backdrop { background: #15251fd1; backdrop-filter: blur(3px); }
+.confirm-icon { display: grid; width: 48px; height: 48px; margin-bottom: 22px; place-items: center; border-radius: 14px; background: #fff0ee; color: #a64035; font-size: 25px; }
+.confirm-dialog .eyebrow { margin-bottom: 8px; }
+.confirm-dialog h2 { margin: 0 0 9px; font-size: 22px; letter-spacing: -.03em; }
+.confirm-description { margin: 0 0 17px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.confirm-subject { overflow: hidden; margin: 0 0 24px; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); color: #52625b; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 9px; }
+.confirm-actions form { margin: 0; }
+.confirm-actions .button { min-height: 42px; }
+.button-danger { background: #a64035; color: white; }
+.button-danger:hover { background: #87342c; }
+.confirm-actions button:focus-visible { outline: 3px solid #87b99c; outline-offset: 3px; }
 .empty-state { padding: 28px; border: 1px dashed #dce5df; border-radius: 12px; color: var(--muted); text-align: center; font-size: 13px; }
 
 .loading { display: flex; align-items: center; gap: 10px; padding: 27px 0; color: var(--muted); font-size: 13px; }
@@ -172,5 +196,8 @@ footer { display: flex; justify-content: space-between; gap: 12px; margin: 45px 
   .email-card summary { padding: 15px; }
   .email-detail { padding: 0 15px 16px; }
   .email-topline { flex-wrap: wrap; }
+  .confirm-dialog { padding: 24px; }
+  .confirm-actions { flex-direction: column-reverse; }
+  .confirm-actions .button { width: 100%; }
   footer { flex-direction: column; }
 }
