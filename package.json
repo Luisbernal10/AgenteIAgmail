@@ -1,0 +1,13 @@
+{
+  "name": "agenteia-gmail",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lector local de Gmail con clasificación y resúmenes en español",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "googleapis": "^185.0.0"
+  }
+}

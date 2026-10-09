@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Lee y clasifica tus correos de Gmail localmente.">
+    <title>AgenteIA · Gmail</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="AgenteIA inicio"><span class="brand-mark">A</span> AgenteIA</a>
+        <span class="privacy"><span class="dot"></span> Procesamiento local</span>
+      </header>
+
+      <section class="intro">
+        <p class="eyebrow">TU BANDEJA, MÁS CLARA</p>
+        <h1>Entiende tus correos<br><span>de un vistazo.</span></h1>
+        <p class="lead">Conecta Gmail para leer y organizar tus mensajes. Tus correos se procesan en este equipo.</p>
+      </section>
+
+      <section class="connection panel" aria-labelledby="connection-title">
+        <div class="connection-copy">
+          <div class="icon-box" aria-hidden="true">✉</div>
+          <div>
+            <h2 id="connection-title">Tu cuenta de Gmail</h2>
+            <p id="connection-status">Comprobando conexión…</p>
+          </div>
+        </div>
+        <button id="connect-button" class="button button-primary" type="button">Conectar Gmail</button>
+      </section>
+
+      <div id="setup-notice" class="notice" hidden></div>
+
+      <section id="mail-section" hidden>
+        <div class="mail-heading">
+          <div>
+            <p class="eyebrow">BANDEJA DE ENTRADA</p>
+            <h2>Tus mensajes <span id="message-count" class="count"></span></h2>
+          </div>
+          <button id="refresh-button" class="button button-light" type="button">↻ <span>Actualizar</span></button>
+        </div>
+        <div id="mode-notice" class="mode-notice" hidden></div>
+        <nav id="category-filters" class="filters" aria-label="Filtrar por categoría"></nav>
+        <div id="email-list" class="email-list" aria-live="polite"></div>
+      </section>
+
+      <div id="loading" class="loading" hidden><span class="spinner"></span> Leyendo tus correos…</div>
+      <div id="error-message" class="error-message" role="alert" hidden></div>
+
+      <footer>
+        <span>Solo lectura · No se envían ni modifican mensajes</span>
+        <span>Conexión protegida por Google OAuth</span>
+      </footer>
+    </main>
+  </body>
+</html>
